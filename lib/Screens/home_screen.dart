@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reserveabite/Components/category_card.dart';
+import 'package:reserveabite/class/burger.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -119,18 +120,37 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<dynamic> getBurgers() async{
-    final allBurgers = await FirebaseDatabase.instance.ref('Takeaway Foods/Burger').get();
-    debugPrint(allBurgers.children.toString());
-    List<Map<String,dynamic>> hotels=[];
-    allBurgers.children.forEach((element) {
-      hotels.add(element.children.iterator);
-    });
-    // allBurgers.
+  Future<dynamic> getBurgers() async {
+    final allBurgers =
+        await FirebaseDatabase.instance.ref('Takeaway Foods/Burger').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
   }
 
   @override
   Widget build(BuildContext context) {
+    getBurgers();
     Color containerColor = isClicked ? Color(0xFFED6E1B) : Colors.white;
     Color containerColor2 = isClicked2 ? Color(0xFFED6E1B) : Colors.white;
     return Scaffold(
@@ -160,9 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
       ),
       drawer: Drawer(
-        width: MediaQuery
-            .sizeOf(context)
-            .width * 0.55,
+        width: MediaQuery.sizeOf(context).width * 0.55,
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -170,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
               accountName: Text(
                 "Waiz Haider",
                 style:
-                GoogleFonts.abel(fontSize: 20, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               accountEmail: Text(
                 "w1a2i3z4@gmail.com",
@@ -195,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Track your Orders',
                 style:
-                GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 // Handle Option 1
@@ -210,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Order History',
                 style:
-                GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 // Handle Option 2
@@ -225,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Payments',
                 style:
-                GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 // Handle Option 2
@@ -240,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Rate Us',
                 style:
-                GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 // Handle Option 2
@@ -255,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Settings',
                 style:
-                GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
+                    GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 // Handle Option 2
@@ -298,14 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 300),
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.2,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.05,
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: containerColor,
@@ -331,14 +343,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 300),
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.2,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.05,
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: containerColor2,
@@ -385,7 +391,6 @@ class _HomeScreenState extends State<HomeScreen> {
               visible: isClicked2,
               child: _menubar(),
             ),
-
           ],
         ),
       ),
@@ -492,7 +497,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.115,
-              left: MediaQuery.of(context).size.width * 0.01, // Adjust left position as needed
+              left: MediaQuery.of(context).size.width *
+                  0.01, // Adjust left position as needed
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.23,
                 width: MediaQuery.of(context).size.width,
@@ -518,7 +524,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Center(
                   child: Text(
                     'Recommended',
-                    style: GoogleFonts.abel(fontSize: 12, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.abel(
+                        fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -526,7 +533,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Positioned(
               top: MediaQuery.of(context).size.height * 0.129,
               right: MediaQuery.of(context).size.width * 0.08,
-              child: Text('See all', style: GoogleFonts.abel(fontSize: 18, fontWeight: FontWeight.bold)),
+              child: Text('See all',
+                  style: GoogleFonts.abel(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.17,
@@ -552,12 +561,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               height: 70,
                               width: 90,
-                              child: Image.asset(itemImage, fit: BoxFit.fill), // Use Image.asset to display the image
+                              child: Image.asset(itemImage,
+                                  fit: BoxFit
+                                      .fill), // Use Image.asset to display the image
                             ),
-                            Text(itemName, style: GoogleFonts.abel(fontSize: 14, fontWeight: FontWeight.bold),
+                            Text(
+                              itemName,
+                              style: GoogleFonts.abel(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
                             ),
-                            Text('PKR $itemPrice', style: GoogleFonts.abel(fontSize: 14, fontWeight: FontWeight.bold,
-                                color: Colors.blue),
+                            Text(
+                              'PKR $itemPrice',
+                              style: GoogleFonts.abel(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue),
                             ),
                           ],
                         ),
@@ -636,29 +654,42 @@ class _HomeScreenState extends State<HomeScreen> {
             )*/
           ],
         ),
-        SizedBox(height: 20,),
         SizedBox(
-          height: 50,
-          width: 50,
-          child: FutureBuilder(future: getBurgers()
-            ,builder: (context,snapshot){
-
-            // if(snapshot.hasData){
-            //
-            // }
-            // else if(snapshot.hasError){
-            //
-            // }
-            // else{
-              return Center(child: CircularProgressIndicator());
-            // }
-          },),
+          height: 20,
         ),
+        FutureBuilder(
+          future: getBurgers(),
+          builder: (context, snapshot) {
+            if(snapshot.hasData){
+              // List<Burger> burgers = snapshot.data as List<Burger>;
+              return SizedBox(
+                height: 200,
+                width: 200,
+                child: Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index){
+                      return ListTile(
+                        title: Text(snapshot.data[index]['food name']),
+                      );
+                    },
+                  ),
+                ),
+              );
 
+            }
+            else if(snapshot.hasError){
+              return Text("Error");
+            }
+            else{
+            return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ],
-
-        );
+    );
   }
+
 /*  Future<List<dynamic>> fetchCategoryData(String category) async {
     DatabaseReference foodsReference = FirebaseDatabase.instance.ref().child("Takeaway Foods").child(category);
 
