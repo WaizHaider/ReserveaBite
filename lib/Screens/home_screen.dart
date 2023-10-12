@@ -660,7 +660,7 @@ class _HomeScreenState extends State<HomeScreen> {
         FutureBuilder(
           future: getBurgers(),
           builder: (context, snapshot) {
-            if(snapshot.hasData){
+            if (snapshot.hasData) {
               // List<Burger> burgers = snapshot.data as List<Burger>;
               return SizedBox(
                 height: 200,
@@ -668,7 +668,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Expanded(
                   child: ListView.builder(
                     itemCount: snapshot.data.length,
-                    itemBuilder: (context, index){
+                    itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(snapshot.data[index]['food name']),
                       );
@@ -676,13 +676,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               );
-
-            }
-            else if(snapshot.hasError){
+            } else if (snapshot.hasError) {
               return Text("Error");
-            }
-            else{
-            return Center(child: CircularProgressIndicator());
+            } else {
+              return Center(child: CircularProgressIndicator());
             }
           },
         ),
