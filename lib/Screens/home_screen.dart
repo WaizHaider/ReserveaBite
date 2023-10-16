@@ -6,6 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:reserveabite/Components/category_card.dart';
 import 'package:reserveabite/class/burger.dart';
 
+import '../Components/franchise_card.dart';
+import '../Components/item.dart';
+import '../Components/item_detail_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -147,6 +151,169 @@ class _HomeScreenState extends State<HomeScreen> {
     // debugPrint("Food name"+burgers[0].foodName);
     return burgers;
   }
+  Future<dynamic> getPizzas() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('Takeaway Foods/Pizzas').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+  Future<dynamic> getPastas() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('Takeaway Foods/Pastas').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+  Future<dynamic> getIceCreams() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('Takeaway Foods/Ice Cream').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+  Future<dynamic> getOthers() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('Takeaway Foods/Others').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+  Future<dynamic> getSideOrders() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('Takeaway Foods/Side Orders').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Burgers length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+  Future<dynamic> getFranchise() async {
+    final allBurgers =
+    await FirebaseDatabase.instance.ref('subadmin').get();
+    // debugPrint(allBurgers.children.toString());
+    //each children is a map of Maps of Burgers that have data
+    //so we need to iterate over each children and get the data
+    //then we need to add it to a list of burgers
+    //then we need to return the list of burgers
+    List branches = [];
+    //getting branches
+    for (var branch in allBurgers.children) {
+      // debugPrint("\n\n" + branch.value.toString());
+      branches.add(branch.value);
+    }
+    List burgers = [];
+    //getting burgers from each branch
+    for (var branch in branches) {
+      for (var burger in branch.values) {
+        // debugPrint("\n\n" + burger.toString());
+
+        burgers.add(burger);
+      }
+    }
+    debugPrint("Franchise length${burgers.length}");
+    // debugPrint("Food name"+burgers[0].foodName);
+    return burgers;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.blue,
               ),
               title: Text(
-                'Rate Us',
+                'FeedBack',
                 style:
                     GoogleFonts.abel(fontSize: 17, fontWeight: FontWeight.bold),
               ),
@@ -391,8 +558,55 @@ class _HomeScreenState extends State<HomeScreen> {
               visible: isClicked2,
               child: _menubar(),
             ),
+            Visibility(
+              visible: isClicked,
+                child: _dinIn()),
           ],
         ),
+      ),
+    );
+  }
+  Widget _dinIn() {
+    return Positioned(
+      top: MediaQuery.of(context).size.height * 0.35,
+      child: FutureBuilder(
+        future: getFranchise(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data;
+            if (data is List) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Expanded(
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final franchiseMap = data[index];
+                      if (franchiseMap is Map && franchiseMap.containsKey('franchise')) {
+                        final franchiseName = franchiseMap['franchise'].toString();
+                        return GestureDetector(
+                          onTap: () {
+                            // Handle onTap
+                          },
+                          child: FranchiseCard(franchiseName: franchiseName),
+                        );
+                      } else {
+                        return Text("Invalid data at index $index");
+                      }
+                    },
+                  ),
+                ),
+              );
+            } else {
+              return Text("Invalid data");
+            }
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
@@ -585,95 +799,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            /*Positioned(
-              top: MediaQuery.of(context).size.height * 0.37,
-              right: MediaQuery.of(context).size.width * 0.09,
-              child: FutureBuilder(
-                future: fetchCategoryData(selectedCategory), // Fetch data for the selected category
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    List<dynamic> items = snapshot.data ?? [];
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.17,
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.grey[100],
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: items.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            // Display your data here
-                            String itemName = items[index]['food name'];
-                            double itemPrice = double.parse(items[index]['price']);
-                            String itemImage = items[index]['image'];
-
-                            return Card(
-                              margin: EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 70,
-                                    width: 90,
-                                    child: Image.network(
-                                      itemImage, // Use Image.network for URL-based images
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  Text(
-                                    itemName,
-                                    style: GoogleFonts.abel(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    'PKR $itemPrice',
-                                    style: GoogleFonts.abel(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Text('No data available');
-                  }
-                },
-              ),
-            )*/
           ],
         ),
         SizedBox(
           height: 20,
         ),
+        if(selectedCategory == 'Burgers')
         FutureBuilder(
           future: getBurgers(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              // List<Burger> burgers = snapshot.data as List<Burger>;
               return SizedBox(
-                height: 200,
-                width: 200,
-                child: Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(snapshot.data[index]['food name']),
-                      );
-                    },
-                  ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        FoodItem foodItem = FoodItem(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]["food name"],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: double.parse(snapshot.data[index]['price'].toString()),
+                          category: snapshot.data[index]['category'],
+                        );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                          ),
+                        );
+                      },
+                      child: CategoryCard(
+                        imageUrl: snapshot.data[index]['image'],
+                        foodName: snapshot.data[index]['food name'],
+                        franchiseName: snapshot.data[index]['franchise name'],
+                        price: snapshot.data[index]['price'],
+                        category: snapshot.data[index]['category'],
+                      ),
+                    );
+                  },
                 ),
               );
             } else if (snapshot.hasError) {
@@ -683,27 +848,230 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
         ),
+        if(selectedCategory == 'Pizza')
+          FutureBuilder(
+            future: getPizzas(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          FoodItem foodItem = FoodItem(
+                            imageUrl: snapshot.data[index]['image'],
+                            foodName: snapshot.data[index]["food name"],
+                            franchiseName: snapshot.data[index]['franchise name'],
+                            price: double.parse(snapshot.data[index]['price'].toString()),
+                            category: snapshot.data[index]['category'],
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                            ),
+                          );
+                        },
+                        child: CategoryCard(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]['food name'],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: snapshot.data[index]['price'],
+                          category: snapshot.data[index]['category'],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text("Error");
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        if(selectedCategory == 'Pasta')
+          FutureBuilder(
+            future: getPastas(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          FoodItem foodItem = FoodItem(
+                            imageUrl: snapshot.data[index]['image'],
+                            foodName: snapshot.data[index]["food name"],
+                            franchiseName: snapshot.data[index]['franchise name'],
+                            price: double.parse(snapshot.data[index]['price'].toString()),
+                            category: snapshot.data[index]['category'],
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                            ),
+                          );
+                        },
+                        child: CategoryCard(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]['food name'],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: snapshot.data[index]['price'],
+                          category: snapshot.data[index]['category'],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text("Error");
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        if(selectedCategory == 'Ice Cream')
+          FutureBuilder(
+            future: getIceCreams(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          FoodItem foodItem = FoodItem(
+                            imageUrl: snapshot.data[index]['image'],
+                            foodName: snapshot.data[index]["food name"],
+                            franchiseName: snapshot.data[index]['franchise name'],
+                            price: double.parse(snapshot.data[index]['price'].toString()),
+                            category: snapshot.data[index]['category'],
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                            ),
+                          );
+                        },
+                        child: CategoryCard(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]['food name'],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: snapshot.data[index]['price'],
+                          category: snapshot.data[index]['category'],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text("Error");
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        if(selectedCategory == 'Side Orders')
+          FutureBuilder(
+            future: getSideOrders(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          FoodItem foodItem = FoodItem(
+                            imageUrl: snapshot.data[index]['image'],
+                            foodName: snapshot.data[index]["food name"],
+                            franchiseName: snapshot.data[index]['franchise name'],
+                            price: double.parse(snapshot.data[index]['price'].toString()),
+                            category: snapshot.data[index]['category'],
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                            ),
+                          );
+                        },
+                        child: CategoryCard(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]['food name'],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: snapshot.data[index]['price'],
+                          category: snapshot.data[index]['category'],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text("Error");
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        if(selectedCategory == 'Others')
+          FutureBuilder(
+            future: getOthers(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          FoodItem foodItem = FoodItem(
+                            imageUrl: snapshot.data[index]['image'],
+                            foodName: snapshot.data[index]["food name"],
+                            franchiseName: snapshot.data[index]['franchise name'],
+                            price: double.parse(snapshot.data[index]['price'].toString()),
+                            category: snapshot.data[index]['category'],
+                          );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                            ),
+                          );
+                        },
+                        child: CategoryCard(
+                          imageUrl: snapshot.data[index]['image'],
+                          foodName: snapshot.data[index]['food name'],
+                          franchiseName: snapshot.data[index]['franchise name'],
+                          price: snapshot.data[index]['price'],
+                          category: snapshot.data[index]['category'],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text("Error");
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
       ],
     );
   }
 
-/*  Future<List<dynamic>> fetchCategoryData(String category) async {
-    DatabaseReference foodsReference = FirebaseDatabase.instance.ref().child("Takeaway Foods").child(category);
-
-    try {
-      DataSnapshot snapshot = (await foodsReference.once()) as DataSnapshot;
-      if (snapshot.value != null) {
-        var data = snapshot.value;
-        if (data is Map<dynamic, dynamic>) {
-          return data.values.toList();
-        }
-      }
-    } catch (error) {
-      print('Error fetching data for $category: $error');
-    }
-
-    return [];
-  }*/
   Widget _buildCategoryItem({
     IconData? icon,
     String? text,
