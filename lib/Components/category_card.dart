@@ -25,64 +25,59 @@ class CategoryCard extends StatelessWidget {
         ? foodName
         : '${foodName.substring(0, maxCharacters)}...';
 
-    return GestureDetector(
-      onTap: () {
-        // Handle the card click event here
-      },
-      child: Card(
-        elevation: 3, // Add some elevation for a shadow
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Container(
-          width: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(imageUrl), // Load image from URL
-                    fit: BoxFit.cover,
-                  ),
+    return Card(
+      elevation: 3, // Add some elevation for a shadow
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        width: 300,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl), // Load image from URL
+                  fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  truncatedFoodName, // Use the truncated name
-                  style: GoogleFonts.abel(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff1034A6),
-                  ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                truncatedFoodName, // Use the truncated name
+                style: GoogleFonts.abel(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff1034A6),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "By: " + franchiseName,
-                  style: GoogleFonts.abel(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "By: " + franchiseName,
+                style: GoogleFonts.abel(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "PKR " + "$price",
-                  style: GoogleFonts.abel(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFED6E1B),
-                  ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "PKR " + "$price",
+                style: GoogleFonts.abel(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFED6E1B),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
