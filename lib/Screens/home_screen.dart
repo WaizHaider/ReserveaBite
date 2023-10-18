@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isClicked2 = false;
   String selectedCategory = '';
 
+
   void _toggleClick() {
     setState(() {
       isClicked = true;
@@ -286,32 +287,20 @@ class _HomeScreenState extends State<HomeScreen> {
     // debugPrint("Food name"+burgers[0].foodName);
     return burgers;
   }
-  Future<dynamic> getFranchise() async {
+  Future<List<dynamic>> getFranchise() async {
+
+    final List<dynamic> listOfFranchise = [];
     final allBurgers =
     await FirebaseDatabase.instance.ref('subadmin').get();
-    // debugPrint(allBurgers.children.toString());
-    //each children is a map of Maps of Burgers that have data
-    //so we need to iterate over each children and get the data
-    //then we need to add it to a list of burgers
-    //then we need to return the list of burgers
-    List branches = [];
-    //getting branches
-    for (var branch in allBurgers.children) {
-      // debugPrint("\n\n" + branch.value.toString());
-      branches.add(branch.value);
-    }
-    List burgers = [];
-    //getting burgers from each branch
-    for (var branch in branches) {
-      for (var burger in branch.values) {
-        // debugPrint("\n\n" + burger.toString());
 
-        burgers.add(burger);
-      }
+
+    for(int i=0;i<allBurgers.children.length;i++){
+      listOfFranchise.add(allBurgers.children.elementAt(i).value);
+      // debugPrint("Franchise map: ${allBurgers.children.elementAt(i).value}");
     }
-    debugPrint("Franchise length${burgers.length}");
-    // debugPrint("Food name"+burgers[0].foodName);
-    return burgers;
+    // print("Franchise map: ${franchiseList.length}");
+
+    return listOfFranchise;
   }
 
 
@@ -532,27 +521,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 200, // Adjust the height as needed
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: fastFoodImages.length,
-                  itemBuilder: (context, index) {
-                    return Image.asset(
-                      'assets/${fastFoodImages[index]}',
-                      fit: BoxFit.cover,
-                    );
-                  },
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPageIndex = index;
-                    });
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Container(
+            //     height: 200, // Adjust the height as needed
+            //     child: PageView.builder(
+            //       controller: _pageController,
+            //       itemCount: fastFoodImages.length,
+            //       itemBuilder: (context, index) {
+            //         return Image.asset(
+            //           'assets/${fastFoodImages[index]}',
+            //           fit: BoxFit.cover,
+            //         );
+            //       },
+            //       onPageChanged: (index) {
+            //         setState(() {
+            //           _currentPageIndex = index;
+            //         });
+            //       },
+            //     ),
+            //   ),
+            // ),
             _buildPageIndicator(),
             Visibility(
               visible: isClicked2,
@@ -567,47 +556,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget _dinIn() {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.35,
-      child: FutureBuilder(
-        future: getFranchise(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final data = snapshot.data;
-            if (data is List) {
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Expanded(
-                  child: ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final franchiseMap = data[index];
-                      if (franchiseMap is Map && franchiseMap.containsKey('franchise')) {
-                        final franchiseName = franchiseMap['franchise'].toString();
-                        return GestureDetector(
-                          onTap: () {
-                            // Handle onTap
-                          },
-                          child: FranchiseCard(franchiseName: franchiseName),
-                        );
-                      } else {
-                        return Text("Invalid data at index $index");
-                      }
-                    },
-                  ),
-                ),
-              );
-            } else {
-              return Text("Invalid data");
-            }
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+    return FutureBuilder(
+      future: getFranchise(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // print("-------------------------------->     ${snapshot.data}");
+          final data = snapshot.data;
+
+
+            return SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: ListView.builder(
+                // itemCount: data!.length,
+                itemCount: data!.length,
+                itemBuilder: (context, index) {
+                  //store value in map
+                  final franchiseMap = data;
+                   final franchiseName = franchiseMap![index]['restaurantName'].toString();
+                   debugPrint("Franchise name: $franchiseName");
+                    return GestureDetector(
+                      onTap: () {
+                        // Handle onTap
+                      },
+                      child: FranchiseCard(franchiseName: franchiseName),
+                    );
+                },
+              ),
+            );
+
+        } else if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
