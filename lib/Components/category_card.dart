@@ -44,38 +44,74 @@ class CategoryCard extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                truncatedFoodName, // Use the truncated name
-                style: GoogleFonts.abel(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff1034A6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: MediaQuery.sizeOf(context).height*0.035,
+                    width: MediaQuery.sizeOf(context).width*0.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      truncatedFoodName, // Use the truncated name
+                      style: GoogleFonts.abel(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff1034A6),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 30,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color(0xFFED6E1B),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "By: " + franchiseName,
+                        style: GoogleFonts.abel(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "By: " + franchiseName,
-                style: GoogleFonts.abel(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    "PKR " + "$price",
+                    style: GoogleFonts.abel(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFED6E1B),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "PKR " + "$price",
-                style: GoogleFonts.abel(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFED6E1B),
-                ),
-              ),
+                Padding(
+                  padding:EdgeInsets.only(right: 8.0),
+                  child: Text('Ratings: 5.0',style: GoogleFonts.abel(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),),
+                )
+              ],
             ),
           ],
         ),

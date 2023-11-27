@@ -4,8 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reserveabite/Components/category_card.dart';
-import 'package:reserveabite/class/burger.dart';
+import 'package:reserveabite/Screens/feedback_screen.dart';
 
+import '../Components/detail.dart';
 import '../Components/franchise_card.dart';
 import '../Components/item.dart';
 import '../Components/item_detail_screen.dart';
@@ -313,32 +314,20 @@ class _HomeScreenState extends State<HomeScreen> {
     // debugPrint("Food name"+burgers[0].foodName);
     return burgers;
   }
-  Future<dynamic> getFranchise() async {
+  Future<List<dynamic>> getFranchise() async {
+
+    final List<dynamic> listOfFranchise = [];
     final allBurgers =
     await FirebaseDatabase.instance.ref('subadmin').get();
-    // debugPrint(allBurgers.children.toString());
-    //each children is a map of Maps of Burgers that have data
-    //so we need to iterate over each children and get the data
-    //then we need to add it to a list of burgers
-    //then we need to return the list of burgers
-    List branches = [];
-    //getting branches
-    for (var branch in allBurgers.children) {
-      // debugPrint("\n\n" + branch.value.toString());
-      branches.add(branch.value);
-    }
-    List burgers = [];
-    //getting burgers from each branch
-    for (var branch in branches) {
-      for (var burger in branch.values) {
-        // debugPrint("\n\n" + burger.toString());
 
-        burgers.add(burger);
-      }
+
+    for(int i=0;i<allBurgers.children.length;i++){
+      listOfFranchise.add(allBurgers.children.elementAt(i).value);
+      // debugPrint("Franchise map: ${allBurgers.children.elementAt(i).value}");
     }
-    debugPrint("Franchise length${burgers.length}");
-    // debugPrint("Food name"+burgers[0].foodName);
-    return burgers;
+    // print("Franchise map: ${franchiseList.length}");
+
+    return listOfFranchise;
   }
 
 
@@ -351,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           'ReseraBite',
-          style: TextStyle(
+          style: GoogleFonts.abel(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Color(0xFFED6E1B),
@@ -456,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onTap: () {
                 // Handle Option 2
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackScreen()));
               },
             ),
             ListTile(
@@ -594,49 +583,43 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget _dinIn() {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.35,
-      child: FutureBuilder(
-        future: getFranchise(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final data = snapshot.data;
-            if (data is List) {
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Expanded(
-                  child: ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final franchiseMap = data[index];
-                      if (franchiseMap is Map && franchiseMap.containsKey('franchise')) {
-                        final franchiseName = franchiseMap['franchise'].toString();
-                        return GestureDetector(
-                          onTap: () {
-                            // Handle onTap
-                          },
-                          child: FranchiseCard(franchiseName: franchiseName),
-                        );
-                      } else {
-                        return Text("Invalid data at index $index");
-                      }
-                    },
+    return FutureBuilder(
+      future: getFranchise(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final data = snapshot.data;
+
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: ListView.builder(
+              itemCount: data!.length,
+              itemBuilder: (context, index) {
+                final franchiseMap = data;
+                final franchiseName = franchiseMap![index]['restaurantName'].toString();
+                final franchiseImageURL = franchiseMap![index]['image'].toString(); // Assuming you have an 'imageURL' field in your data
+
+                return GestureDetector(
+                  onTap: () {
+                    // Handle onTap
+                  },
+                  child: FranchiseCard(
+                    franchiseName: franchiseName,
+                    franchiseImageURL: franchiseImageURL,
                   ),
-                ),
-              );
-            } else {
-              return Text("Invalid data");
-            }
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+                );
+              },
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
+
 
   Widget _menubar() {
     return SingleChildScrollView(
@@ -796,30 +779,42 @@ class _HomeScreenState extends State<HomeScreen> {
                         double itemPrice = items[index]['price'];
                         String itemImage = items[index]['image'];
 
-                        return Card(
-                          margin: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 70,
-                                width: 90,
-                                child: Image.asset(itemImage,
-                                    fit: BoxFit
-                                        .fill), // Use Image.asset to display the image
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to the detail screen when an item is tapped
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DetailsScreen(
+                                  itemName: itemName,
+                                  itemPrice: itemPrice,
+                                  itemImage: itemImage,
+                                ),
                               ),
-                              Text(
-                                itemName,
-                                style: GoogleFonts.abel(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'PKR $itemPrice',
-                                style: GoogleFonts.abel(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
-                              ),
-                            ],
+                            );
+                          },
+                          child: Card(
+                            margin: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 70,
+                                  width: 90,
+                                  child: Image.asset(itemImage, fit: BoxFit.fill),
+                                ),
+                                Text(
+                                  itemName,
+                                  style: GoogleFonts.abel(
+                                      fontSize: 14, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'PKR $itemPrice',
+                                  style: GoogleFonts.abel(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -832,314 +827,321 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 20,
           ),
-          if(selectedCategory == 'Burger')
-          FutureBuilder(
-            future: getBurgers(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          FoodItem foodItem = FoodItem(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]["food name"],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: double.parse(snapshot.data[index]['price'].toString()),
-                            category: snapshot.data[index]['category'],
-                          );
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                            ),
-                          );
-                        },
-                        child: CategoryCard(
-                          imageUrl: snapshot.data[index]['image'],
-                          foodName: snapshot.data[index]['food name'],
-                          franchiseName: snapshot.data[index]['franchise name'],
-                          price: snapshot.data[index]['price'],
-                          category: snapshot.data[index]['category'],
-                        ),
-                      );
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if(selectedCategory == 'Burger')
+                  FutureBuilder(
+                    future: getBurgers(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
                     },
                   ),
-                );
-              } else if (snapshot.hasError) {
-                return Text("Error");
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
+                if(selectedCategory == 'Pizza')
+                  FutureBuilder(
+                    future: getPizzas(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                if(selectedCategory == 'Pasta')
+                  FutureBuilder(
+                    future: getPastas(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                if(selectedCategory == 'Ice Cream')
+                  FutureBuilder(
+                    future: getIceCreams(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                if(selectedCategory == 'Side Orders')
+                  FutureBuilder(
+                    future: getSideOrders(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                if(selectedCategory == 'Others')
+                  FutureBuilder(
+                    future: getOthers(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                if(selectedCategory == 'Deserts')
+                  FutureBuilder(
+                    future: getDeserts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  FoodItem foodItem = FoodItem(
+                                    imageUrl: snapshot.data[index]['image'],
+                                    foodName: snapshot.data[index]["food name"],
+                                    franchiseName: snapshot.data[index]['franchise name'],
+                                    price: double.parse(snapshot.data[index]['price'].toString()),
+                                    category: snapshot.data[index]['category'],
+                                  );
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  imageUrl: snapshot.data[index]['image'],
+                                  foodName: snapshot.data[index]['food name'],
+                                  franchiseName: snapshot.data[index]['franchise name'],
+                                  price: snapshot.data[index]['price'],
+                                  category: snapshot.data[index]['category'],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error");
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+              ],
+            ),
           ),
-          if(selectedCategory == 'Pizza')
-            FutureBuilder(
-              future: getPizzas(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          if(selectedCategory == 'Pasta')
-            FutureBuilder(
-              future: getPastas(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          if(selectedCategory == 'Ice Cream')
-            FutureBuilder(
-              future: getIceCreams(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          if(selectedCategory == 'Side Orders')
-            FutureBuilder(
-              future: getSideOrders(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          if(selectedCategory == 'Others')
-            FutureBuilder(
-              future: getOthers(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          if(selectedCategory == 'Deserts')
-            FutureBuilder(
-              future: getDeserts(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            FoodItem foodItem = FoodItem(
-                              imageUrl: snapshot.data[index]['image'],
-                              foodName: snapshot.data[index]["food name"],
-                              franchiseName: snapshot.data[index]['franchise name'],
-                              price: double.parse(snapshot.data[index]['price'].toString()),
-                              category: snapshot.data[index]['category'],
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DetailScreen(foodItem: foodItem, takeawayText: 'Takeaway'),
-                              ),
-                            );
-                          },
-                          child: CategoryCard(
-                            imageUrl: snapshot.data[index]['image'],
-                            foodName: snapshot.data[index]['food name'],
-                            franchiseName: snapshot.data[index]['franchise name'],
-                            price: snapshot.data[index]['price'],
-                            category: snapshot.data[index]['category'],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error");
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
         ],
       ),
     );
